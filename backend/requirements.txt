@@ -14,3 +14,4 @@ sklearn
 uuid
 joblib
 python-dotenv
+gunicorn
