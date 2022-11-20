@@ -13,15 +13,20 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 import joblib
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
+@cross_origin()
 def main():
     return jsonify({"message": "this is our api :D"})
 
 #gives you session id you can use for getting data about the person
 @app.route('/login', methods=["POST"])
+@cross_origin()
 def login():
     input_json = request.get_json(force=True)
     print(input_json)
@@ -35,6 +40,7 @@ def login():
 
 #registers and returns whether it was a success or not, possible messages can be seen in database.py
 @app.route('/register', methods=["POST"])
+@cross_origin()
 def register():
     input_json = request.get_json(force=True)
     result = database.register(input_json["email"], input_json["password"], input_json["first_name"], input_json["last_name"])
@@ -43,12 +49,14 @@ def register():
 
 #put in a json with SESSION_ID, index and value
 @app.route('/set_data', methods=["POST"])
+@cross_origin()
 def set_data():
     input_json = request.get_json(force=True)
     result = database.set_data(input_json["SESSION_ID"], input_json["index"], input_json["value"])
     return jsonify({"message": result})
 
 @app.route('/diagnose', methods=["POST"])
+@cross_origin()
 def diagnose():
     input_json = request.get_json(force=True)
     symptom_inputs = input_json["symptoms"]

@@ -16,3 +16,4 @@ joblib
 python-dotenv
 gunicorn
 scikit-learn
+flask-cors
