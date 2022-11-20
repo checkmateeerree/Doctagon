@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import uuid
 import database
 import numpy as np
-import pandas as pd
+#import pandas as pd
 from scipy.stats import mode
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -15,10 +15,6 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 import joblib
 
 app = Flask(__name__)
-
-@app.route("/")
-def main():
-    return jsonify({"message": "this is our api :D"})
 
 #gives you session id you can use for getting data about the person
 @app.route('/login', methods=["POST"])
@@ -54,6 +50,14 @@ def diagnose():
     
     DATA_PATH = "dataset/Training.csv"
     data = pd.read_csv(DATA_PATH).dropna(axis = 1)
+    
+    # Checking whether the dataset is balanced or not
+    disease_counts = data["prognosis"].value_counts()
+    # print(disease_counts)
+    temp_df = pd.DataFrame({
+        "Disease": disease_counts.index,
+        "Counts": disease_counts.values
+    })
 
     # Encoding the target value into numerical
     # value using LabelEncoder
@@ -120,4 +124,4 @@ def diagnose():
 
 
 if __name__ == "__main__":
-	app.run()
+	app.run(debug=True)
