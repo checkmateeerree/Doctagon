@@ -16,6 +16,10 @@ import joblib
 
 app = Flask(__name__)
 
+@app.route("/")
+def main():
+    return jsonify({"message": "this is our api :D"})
+
 #gives you session id you can use for getting data about the person
 @app.route('/login', methods=["POST"])
 def login():
