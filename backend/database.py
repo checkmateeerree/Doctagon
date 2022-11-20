@@ -2,7 +2,7 @@ import pymongo
 from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from flask import Flask
-import dotenv
+from dotenv import load_dotenv
 import os
 
 load_dotenv()
