@@ -2,9 +2,12 @@ import pymongo
 from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from flask import Flask
+import dotenv
+import os
 
+load_dotenv()
 
-cluster = MongoClient("mongodb+srv://neiphu:w5oD50ZoiVcnYteZ@cluster0.wj501am.mongodb.net/")
+cluster = MongoClient("mongodb+srv://neiphu:{p}@cluster0.wj501am.mongodb.net/".format(p=os.getenv('mongopass')))
 db = cluster["doctagon"]
 user_info = db["UserInfo"]
 session_info = db["SessionID"]

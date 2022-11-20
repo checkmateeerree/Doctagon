@@ -13,3 +13,4 @@ seaborn
 sklearn
 uuid
 joblib
+python-dotenv
