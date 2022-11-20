@@ -16,7 +16,9 @@ bcrypt = Bcrypt(app)
 
 def login(email, password):
     results = user_info.find_one({"email":email})
-    if bcrypt.check_password_hash(results["password"], password):
+    if results == None:
+        return False
+    elif bcrypt.check_password_hash(results["password"], password):
         return True
     else:
         return False

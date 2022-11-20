@@ -24,6 +24,7 @@ def main():
 @app.route('/login', methods=["POST"])
 def login():
     input_json = request.get_json(force=True)
+    print(input_json)
     SESSION_ID = str(uuid.uuid4())
     if database.login(input_json["email"], input_json["password"]):
         dictToReturn = {"SESSION_ID": SESSION_ID}
