@@ -39,7 +39,7 @@ def login():
     else:
         dictToReturn = {"SESSION_ID": "false"}
     database.set_session_id(input_json["email"], SESSION_ID)
-    return _corsify_actual_response(jsonify(dictToReturn))
+    return jsonify(dictToReturn)
 
 #registers and returns whether it was a success or not, possible messages can be seen in database.py
 @app.route('/register', methods=["POST"])
@@ -50,7 +50,7 @@ def register():
     input_json = request.get_json(force=True)
     result = database.register(input_json["email"], input_json["password"], input_json["first_name"], input_json["last_name"])
     message = {"message": result}
-    return _corsify_actual_response(jsonify(message))
+    return jsonify(message)
 
 #put in a json with SESSION_ID, index and value
 @app.route('/set_data', methods=["POST"])
@@ -131,7 +131,7 @@ def diagnose():
         }
         return predictions
         
-    return _corsify_actual_response(predictDisease(",".join(symptom_inputs)))
+    return predictDisease(",".join(symptom_inputs))
 
 def _build_cors_preflight_response():
     response = make_response()
@@ -139,10 +139,5 @@ def _build_cors_preflight_response():
     response.headers.add('Access-Control-Allow-Headers', "*")
     response.headers.add('Access-Control-Allow-Methods', "*")
     return response
-
-def _corsify_actual_response(response):
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
-
 if __name__ == "__main__":
 	app.run()
