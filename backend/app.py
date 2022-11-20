@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import uuid
 import database
 import numpy as np
@@ -28,24 +28,29 @@ def main():
 @app.route('/login', methods=["POST"])
 @cross_origin()
 def login():
+    
+    if request.method == "OPTIONS": # CORS preflight
+        return _build_cors_preflight_response()
+    
     input_json = request.get_json(force=True)
-    print(input_json)
     SESSION_ID = str(uuid.uuid4())
     if database.login(input_json["email"], input_json["password"]):
         dictToReturn = {"SESSION_ID": SESSION_ID}
     else:
         dictToReturn = {"SESSION_ID": "false"}
     database.set_session_id(input_json["email"], SESSION_ID)
-    return jsonify(dictToReturn)
+    return _corsify_actual_response(jsonify(dictToReturn))
 
 #registers and returns whether it was a success or not, possible messages can be seen in database.py
 @app.route('/register', methods=["POST"])
 @cross_origin()
 def register():
+    if request.method == "OPTIONS": # CORS preflight
+        return _build_cors_preflight_response()
     input_json = request.get_json(force=True)
     result = database.register(input_json["email"], input_json["password"], input_json["first_name"], input_json["last_name"])
     message = {"message": result}
-    return jsonify(message)
+    return _corsify_actual_response(jsonify(message))
 
 #put in a json with SESSION_ID, index and value
 @app.route('/set_data', methods=["POST"])
@@ -58,6 +63,8 @@ def set_data():
 @app.route('/diagnose', methods=["POST"])
 @cross_origin()
 def diagnose():
+    if request.method == "OPTIONS": # CORS preflight
+        return _build_cors_preflight_response()
     input_json = request.get_json(force=True)
     symptom_inputs = input_json["symptoms"]
     
@@ -124,9 +131,18 @@ def diagnose():
         }
         return predictions
         
-    return predictDisease(",".join(symptom_inputs))
+    return _corsify_actual_response(predictDisease(",".join(symptom_inputs)))
 
+def _build_cors_preflight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
 
+def _corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 if __name__ == "__main__":
 	app.run()
