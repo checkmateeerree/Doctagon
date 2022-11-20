@@ -1,0 +1,15 @@
+pymongo
+bcrypt
+Flask
+Flask-Bcrypt
+Flask-Login
+Flask-SQLAlchemy
+Flask-WTF
+numpy
+pandas
+scipy
+matplotlib
+seaborn
+sklearn
+uuid
+joblib
