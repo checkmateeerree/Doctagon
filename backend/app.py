@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, abort
 import uuid
 import database
 import numpy as np
@@ -37,7 +37,7 @@ def login():
     if database.login(input_json["email"], input_json["password"]):
         dictToReturn = {"SESSION_ID": SESSION_ID}
     else:
-        dictToReturn = {"SESSION_ID": "false"}
+        abort(403)
     database.set_session_id(input_json["email"], SESSION_ID)
     return jsonify(dictToReturn)
 
