@@ -14,6 +14,7 @@ import {
   } from '@chakra-ui/react';
 
   import { useState } from 'react';
+  import axios from "axios"
   
   export default function Login() {
     const [email, setEmail] = useState("")
@@ -27,9 +28,23 @@ import {
         setPassword(e.target.value)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log('hi')
+        try {
+            const response = await axios.post(
+                "https://doctagon.herokuapp.com/login",
+                JSON.stringify({ email, password }),
+                {
+                  headers: { "Content-Type": "application/json" },
+                }
+              );
+              localStorage.setItem("SESSION_ID", response.data["SESSION_ID"])
+              alert("successfully logged in")
+              window.location = "/"
+        }
+        catch (err) {
+            alert("incorrect user credentials")
+          }
     }
 
     return (

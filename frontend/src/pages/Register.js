@@ -18,6 +18,7 @@ import {
   FormHelperText,
   InputRightElement,
 } from '@chakra-ui/react';
+import axios from "axios"
 
 import { useToast } from '@chakra-ui/react';
 
@@ -46,8 +47,21 @@ export default function Register() {
         setPassword(e.target.value)
     }
 
-    const handleSubmit = (e) => {
-        console.log("test")
+    const handleSubmit = async (e) => {
+        try {
+            const response = await axios.post(
+                "https://doctagon.herokuapp.com/register",
+                JSON.stringify({ email, password, "first_name": firstName, "last_name": lastName }),
+                {
+                  headers: { "Content-Type": "application/json" },
+                }
+              );
+              alert("account successfully created")
+              window.location = "/login"
+        }
+        catch (err) {
+            alert("user already exists")
+          }
     }
 
   return (
@@ -114,13 +128,7 @@ export default function Register() {
                 variant="solid"
                 onClick={() => {
                   handleSubmit();
-                  toast({
-                    title: 'Account created.',
-                    description: "We've created your account for you.",
-                    status: 'success',
-                    duration: 3000,
-                    isClosable: true,
-                  });
+                  
                 }}>
                 Submit
               </Button>

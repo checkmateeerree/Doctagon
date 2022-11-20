@@ -38,9 +38,14 @@ const MenuIcon = () => (
   </svg>
 );
 
-export default function Navbar() {
+export default function Navbar({isAuthenticated}) {
   const [show, setShow] = React.useState(false);
   const toggleMenu = () => setShow(!show);
+
+  const handleLogout = () => {
+    localStorage.removeItem("SESSION_ID")
+    window.location = "/"
+  }
 
   return (
     <Flex
@@ -80,8 +85,12 @@ export default function Navbar() {
           <MenuIt to="/">Home</MenuIt>
           <MenuIt to="/about">About</MenuIt>
           <MenuIt to="/contact">Contact Us</MenuIt>
-          <MenuIt to="/login"><Button colorScheme="green" variant="outline" size="lg">Login</Button></MenuIt>
-          <MenuIt to="/register"><Button colorScheme="teal" size="lg">Register</Button></MenuIt>
+          {isAuthenticated && <Button colorScheme="green" variant="outline" size="lg" onClick={handleLogout}>Logout</Button>}
+          {!isAuthenticated && 
+          (<><MenuIt to="/login"><Button colorScheme="green" variant="outline" size="lg">Login</Button></MenuIt>
+          <MenuIt to="/register"><Button colorScheme="teal" size="lg">Register</Button></MenuIt></>)
+          }
+
         </Flex>
       </Box>
     </Flex>
