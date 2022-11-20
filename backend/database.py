@@ -26,7 +26,7 @@ def login(email, password):
 def register(email, password, first_name, last_name):
     exist = user_info.find({"email": email})
     for e in exist:
-        return "Error: email already exists, " + e["email"]
+        return False
     else: 
         user = {
             "email": email,

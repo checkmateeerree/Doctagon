@@ -49,6 +49,8 @@ def register():
         return _build_cors_preflight_response()
     input_json = request.get_json(force=True)
     result = database.register(input_json["email"], input_json["password"], input_json["first_name"], input_json["last_name"])
+    if (not result):
+        abort(401)
     message = {"message": result}
     return jsonify(message)
 
