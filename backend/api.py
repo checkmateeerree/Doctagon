@@ -13,6 +13,9 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 import joblib
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 app = Flask(__name__)
 
@@ -60,7 +63,6 @@ def diagnose():
     })
 
     # Encoding the target value into numerical
-    # value using LabelEncoder
     encoder = LabelEncoder()
     data["prognosis"] = encoder.fit_transform(data["prognosis"])
 
@@ -68,7 +70,7 @@ def diagnose():
     y = data.iloc[:, -1]
     
 
-    # Training the models on whole data
+    # Training the models
     final_svm_model = joblib.load("svm.cls")
     final_nb_model = joblib.load("guassiannb.cls")
     final_rf_model = joblib.load("randomforestclassifier.cls")
@@ -76,21 +78,18 @@ def diagnose():
     symptoms = X.columns.values
     
     # Creating a symptom index dictionary to encode the
-    # input symptoms into numerical form
     symptom_index = {}
     for index, value in enumerate(symptoms):
         symptom = " ".join([i.capitalize() for i in value.split("_")])
         symptom_index[symptom] = index
-    # print(symptom_index)
+    print(symptom_index)
 
     data_dict = {
         "symptom_index":symptom_index,
         "predictions_classes":encoder.classes_
     }
     
-    # Defining the Function
-    # Input: string containing symptoms separated by commmas
-    # Output: Generated predictions by models
+    # Defining Function
     def predictDisease(symptoms):
         symptoms = symptoms.split(",")
         
@@ -101,7 +100,6 @@ def diagnose():
             input_data[index] = 1
             
         # reshaping the input data and converting it
-        # into suitable format for model predictions
         input_data = np.array(input_data).reshape(1,-1)
         
         # generating individual outputs
@@ -109,7 +107,6 @@ def diagnose():
         nb_prediction = data_dict["predictions_classes"][final_nb_model.predict(input_data)[0]]
         svm_prediction = data_dict["predictions_classes"][final_svm_model.predict(input_data)[0]]
         
-        # making final prediction by taking mode of all predictions
         final_prediction = mode([rf_prediction, nb_prediction, svm_prediction])[0][0]
         predictions = {
             "rf_model_prediction": rf_prediction,
